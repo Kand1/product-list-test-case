@@ -19,6 +19,9 @@ export default {
         price: `${Math.floor(Math.random() * 9 + 1)} 000`,
       }));
     },
+    addProduct(state, payLoad) {
+      state.products.push(payLoad);
+    },
   },
   actions: {
     fetchProducts(context) {

@@ -26,6 +26,7 @@ export default {
 
 <style lang="scss" scoped>
 .product {
+  animation: 1s show ease;
   transition: 0.4s;
   cursor: pointer;
   margin: 16px 0 0 16px;
@@ -35,8 +36,6 @@ export default {
   box-shadow: 0px 20px 30px rgba(0, 0, 0, 0.04), 0px 6px 10px rgba(0, 0, 0, 0.02);
   border-radius: 4px;
   font-weight: 600;
-  font-size: 20px;
-  line-height: 25px;
   img {
     border-radius: 4px;
     width: 332px;
@@ -44,20 +43,36 @@ export default {
   }
   .title {
     margin: 16px;
+    height: 25px;
+    font-size: 20px;
+    line-height: 25px;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
   .description {
-    font-weight: 400;
     margin: 16px;
-    height: 96px;
+    height: 80px;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 20px;
+    overflow-x: auto;
+    overflow-y: auto;
   }
   .price {
     margin: 16px;
     margin-bottom: 24px;
+    height: 30px;
+    font-size: 24px;
+    line-height: 30px;
+    overflow-y: auto;
   }
 }
-
 .product:hover {
-  transform: scale(1.02);
+  transform: scale(1.03);
+}
+@keyframes show {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 </style>

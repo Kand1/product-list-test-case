@@ -5,32 +5,73 @@
     </div>
     <form class="form">
       <div>
-        <div class="title text">
+        <div class="required text">
           Наименование товара
         </div>
-        <label class="titleInput" for="titleInput">
-          <input id="titleInput" type="text" placeholder="Введите наименование товара">
+        <label for="titleInput">
+          <input id="titleInput"
+                 type="text"
+                 placeholder="Введите наименование товара"
+                 v-model="title"
+                 @blur="() => checkInput('title')"
+                 v-bind:class="{ error: errors.title}"
+          >
         </label>
-        <div class="description text">
+        <div class="errorText" v-if="errors.title">
+          Поле является обязательным
+        </div>
+        <div class="hidden" v-else>
+          hidden element
+        </div>
+        <div class="text">
           Описание товара
         </div>
-        <label class="descriptionInput" for="descriptionInput">
-          <textarea id="descriptionInput" rows="6" placeholder="Введите описание товара"/>
+        <label for="descriptionInput">
+          <textarea id="descriptionInput"
+                    rows="6"
+                    placeholder="Введите описание товара"
+                    v-model="description"
+          />
         </label>
-        <div class="photo text">
+        <div class="required text">
           Ссылка на изображение товара
         </div>
-        <label class="photoInput" for="titleInput">
-          <input id="titleInput" type="text" placeholder="Введите ссылку">
+        <label for="urlInput">
+          <input id="urlInput"
+                 type="text"
+                 placeholder="Введите ссылку"
+                 v-model="url"
+                 @blur="() => checkInput('url')"
+                 v-bind:class="{ error: errors.url}"
+          >
         </label>
-        <div class="price text">
+        <div class="errorText" v-if="errors.url">
+          Поле является обязательным
+        </div>
+        <div class="hidden" v-else>
+          hidden element
+        </div>
+        <div class="required text">
           Цена товара
         </div>
-        <label class="priceInput" for="titleInput">
-          <input id="titleInput" type="text" placeholder="Введите цену">
+        <label for="priceInput">
+          <input id="priceInput"
+                 type="text"
+                 placeholder="Введите цену"
+                 v-model="price"
+                 @blur="() => checkInput('price')"
+                 @input="onInputMask"
+                 v-bind:class="{ error: errors.price}"
+          >
         </label>
+        <div class="errorText" v-if="errors.price">
+          Поле является обязательным
+        </div>
+        <div class="hidden" v-else>
+          hidden element
+        </div>
         <div>
-          <button disabled>Добавить товар</button>
+          <button @click="onSubmit" :disabled="hasErrors">Добавить товар</button>
         </div>
       </div>
     </form>
@@ -38,13 +79,89 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
 
+export default {
+  data: () => ({
+    errors: {
+      title: null,
+      url: null,
+      price: null,
+    },
+    title: '',
+    url: '',
+    price: '',
+    description: '',
+  }),
+  computed: {
+    hasErrors() {
+      return Object.values(this.errors).reduce((prev, cur) => {
+        if (prev === true) {
+          return true;
+        }
+        if (cur === null) {
+          return true;
+        }
+        return cur;
+      }, false);
+    },
+  },
+  methods: {
+    ...mapMutations(['addProduct']),
+    onSubmit(e) {
+      e.preventDefault();
+      this.addProduct({
+        id: Date.now(),
+        title: this.title,
+        url: this.url,
+        price: this.price,
+        description: this.description,
+      });
+    },
+    onInputMask(e) {
+      if (Number.isNaN(+e.data) || e.data === ' ') {
+        this.price = this.price.substring(0, this.price.length - 1);
+      } else {
+        const priceInt = this.price.replace(/\s/g, '');
+        this.price = priceInt.toString().replace(/\B(?=(?:\d{3})+(?!\d))/g, ' ');
+      }
+    },
+    checkInput(el) {
+      if (!this[el]) {
+        this.errors[el] = true;
+      }
+    },
+  },
+  watch: {
+    price(newValue) {
+      if (newValue) {
+        this.errors.price = false;
+      } else {
+        this.errors.price = true;
+      }
+    },
+    title(newValue) {
+      if (newValue) {
+        this.errors.title = false;
+      } else {
+        this.errors.title = true;
+      }
+    },
+    url(newValue) {
+      if (newValue) {
+        this.errors.url = false;
+      } else {
+        this.errors.url = true;
+      }
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
 .form {
   box-sizing: border-box;
-  padding: 8px 24px 24px 24px;
+  padding: 22px 24px 24px 24px;
   margin-left: 32px;
   height: 440px;
   width: 332px;
@@ -53,12 +170,41 @@
   border-radius: 4px;
   .text {
     margin-bottom: 4px;
-    margin-top: 16px;
+    margin-top: 2px;
     font-weight: 400;
     font-size: 10px;
     line-height: 13px;
     letter-spacing: -0.02em;
     color: #49485E;
+  }
+  .errorText {
+    animation: 0.5s show ease;
+    font-weight: 400;
+    font-size: 8px;
+    line-height: 10px;
+    letter-spacing: -0.02em;
+    color: #FF8484;
+    margin-top: 4px;
+  }
+  @keyframes show {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .error {
+    transition: 0.4s;
+    border: #FF8484 solid 1px;
+  }
+  .hidden {
+    font-weight: 400;
+    font-size: 8px;
+    line-height: 10px;
+    letter-spacing: -0.02em;
+    visibility: hidden;
+    margin-top: 4px;
+  }
+  .required:after {
+    content: ' *';
+    color: #FF8484;
   }
   input, textarea {
     box-sizing: border-box;
@@ -67,7 +213,7 @@
     background: #FFFEFB;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
-    border: none;
+    border: transparent solid 1px;
     font-weight: 400;
     font-size: 12px;
     line-height: 15px;
@@ -80,9 +226,11 @@
   input:focus, textarea:focus {
     outline: 0;
     outline-offset: 0;
-    border: none;
+    border: #B4B4B4 solid 1px;
   }
   button {
+    transition: 0.2s;
+    cursor: pointer;
     box-sizing: border-box;
     margin-top: 24px;
     width: 100%;
@@ -93,7 +241,14 @@
     border: none;
     height: 36px;
   }
+  button:hover {
+    background: #6B9E63;
+  }
+  button:active {
+    background: #5B8E53;
+  }
   button:disabled {
+    cursor: default;
     background-color: #EEEEEE;
     color: #B4B4B4;
   }

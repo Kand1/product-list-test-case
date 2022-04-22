@@ -9,14 +9,17 @@
 
 <script>
 import ProductItem from '@/components/ProductItem.vue';
+import { mapActions } from 'vuex';
 
 export default {
   components: {
     ProductItem,
   },
-
+  methods: {
+    ...mapActions(['fetchProducts']),
+  },
   mounted() {
-    this.$store.dispatch('fetchProducts');
+    this.fetchProducts();
   },
 };
 </script>
@@ -36,14 +39,4 @@ export default {
   -ms-overflow-style: none;
 }
 .list::-webkit-scrollbar { width: 0; }
-//.list::after {
-//  content: '';
-//  flex: 0 0 360px;
-//}
-//
-//@media (max-width: 740px) {
-//  list {
-//    justify-content: center;
-//  }
-//}
 </style>
