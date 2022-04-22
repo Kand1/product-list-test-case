@@ -22,10 +22,13 @@ export default {
     addProduct(state, payLoad) {
       state.products.push(payLoad);
     },
+    deleteProduct(state, payLoad) {
+      setTimeout(() => state.products.splice(payLoad, 1), 700);
+    },
   },
   actions: {
     fetchProducts(context) {
-      axios.get('https://jsonplaceholder.typicode.com/photos?_limit=7')
+      return axios.get('https://jsonplaceholder.typicode.com/photos?_limit=7')
         .then((response) => context.commit('setProducts', response.data));
     },
   },

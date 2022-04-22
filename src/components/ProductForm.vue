@@ -134,25 +134,13 @@ export default {
   },
   watch: {
     price(newValue) {
-      if (newValue) {
-        this.errors.price = false;
-      } else {
-        this.errors.price = true;
-      }
+      this.errors.price = !newValue;
     },
     title(newValue) {
-      if (newValue) {
-        this.errors.title = false;
-      } else {
-        this.errors.title = true;
-      }
+      this.errors.title = !newValue;
     },
     url(newValue) {
-      if (newValue) {
-        this.errors.url = false;
-      } else {
-        this.errors.url = true;
-      }
+      this.errors.url = !newValue;
     },
   },
 };
@@ -229,7 +217,7 @@ export default {
     border: #B4B4B4 solid 1px;
   }
   button {
-    transition: 0.2s;
+    transition: 0.5s;
     cursor: pointer;
     box-sizing: border-box;
     margin-top: 24px;
@@ -242,12 +230,15 @@ export default {
     height: 36px;
   }
   button:hover {
+    transition: 0.3s;
     background: #6B9E63;
   }
   button:active {
+    transition: 0.3s;
     background: #5B8E53;
   }
   button:disabled {
+    transition: 0.5s;
     cursor: default;
     background-color: #EEEEEE;
     color: #B4B4B4;

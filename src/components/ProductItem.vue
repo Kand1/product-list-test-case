@@ -1,5 +1,10 @@
 <template>
-  <div class="product">
+  <div class="product"
+       v-bind:class="{removed, added}"
+  >
+    <button @click="onDeleteButton">
+      <img src="@/assets/Vector.png" alt="">
+    </button>
     <img :src="product.url" alt="">
     <div class="title">
       {{product.title}}
@@ -14,19 +19,45 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
+
 export default {
+  data: () => ({
+    removed: false,
+    added: true,
+  }),
   props: {
     product: {
       type: Object,
       required: true,
     },
+    id: {
+      type: Number,
+      required: true,
+    },
+  },
+  methods: {
+    ...mapMutations(['deleteProduct']),
+    onDeleteButton() {
+      this.removed = true;
+      console.log(this.id);
+      this.deleteProduct(this.id);
+      setTimeout(() => {
+        this.removed = false;
+      }, 700);
+    },
+  },
+  mounted() {
+    setTimeout(() => {
+      this.added = false;
+    }, 700);
   },
 };
 </script>
 
 <style lang="scss" scoped>
 .product {
-  animation: 1s show ease;
+  position: relative;
   transition: 0.4s;
   cursor: pointer;
   margin: 16px 0 0 16px;
@@ -36,6 +67,22 @@ export default {
   box-shadow: 0px 20px 30px rgba(0, 0, 0, 0.04), 0px 6px 10px rgba(0, 0, 0, 0.02);
   border-radius: 4px;
   font-weight: 600;
+  button {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    border: none;
+    width: 32px;
+    height: 32px;
+    background: #FF8484;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    visibility: hidden;
+    img {
+      height: 16px;
+      width: 13px;
+    }
+  }
   img {
     border-radius: 4px;
     width: 332px;
@@ -69,10 +116,26 @@ export default {
 }
 .product:hover {
   transform: scale(1.03);
+  button {
+    visibility: visible;
+    animation: 0.6s show ease;
+    cursor: pointer;
+  }
+}
+.added {
+  animation: 0.7s show ease;
+}
+.removed {
+  animation: 0.7s delete ease;
 }
 @keyframes show {
   from { opacity: 0; }
   to { opacity: 1; }
+}
+
+@keyframes delete {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
 </style>

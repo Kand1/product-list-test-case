@@ -30,6 +30,7 @@ body {
   font-family: 'Source Sans Pro', sans-serif;
   font-style: normal;
   color: #3F3F3F;
+  height: 100vh;
 }
 
 @media (max-width: 740px) {
