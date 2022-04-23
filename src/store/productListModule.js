@@ -3,9 +3,34 @@ import axios from 'axios';
 export default {
   state: {
     products: [],
+    sortingMethod: 'По умолчанию',
   },
   getters: {
     getProducts(state) {
+      const mas = JSON.parse(JSON.stringify(state.products));
+      if (state.sortingMethod === 'По умолчанию') {
+        return mas;
+      }
+      if (state.sortingMethod === 'По убыванию') {
+        mas.sort((el1, el2) => (el2.price.split(' ').join('') - el1.price.split(' ').join('')));
+        return mas;
+      }
+      if (state.sortingMethod === 'По возрастанию') {
+        mas.sort((el1, el2) => (el1.price.split(' ').join('') - el2.price.split(' ').join('')));
+        return mas;
+      }
+      if (state.sortingMethod === 'По наименованию') {
+        mas.sort((el1, el2) => {
+          if (el1.title < el2.title) {
+            return -1;
+          }
+          if (el1.title === el2.title) {
+            return 0;
+          }
+          return 1;
+        });
+        return mas;
+      }
       return state.products;
     },
   },
@@ -22,20 +47,21 @@ export default {
         price: el.price ? el.price : `${Math.floor(Math.random() * 9 + 1)} 000`,
       }));
     },
+    setSortingMethod(state, payLoad) {
+      state.sortingMethod = payLoad;
+    },
     addProduct(state, payLoad) {
       state.products.push(payLoad);
       localStorage.products = JSON.stringify(state.products);
     },
     deleteProduct(state, payLoad) {
-      setTimeout(() => {
-        state.products = state.products.filter((el) => (el.id !== payLoad));
-        localStorage.products = JSON.stringify(state.products);
-      }, 700);
+      state.products = state.products.filter((el) => (el.id !== payLoad));
+      localStorage.products = JSON.stringify(state.products);
     },
   },
   actions: {
     fetchProducts(context) {
-      if (!JSON.parse(localStorage.products)?.length) {
+      if (!localStorage.products || !(JSON.parse(localStorage.products).length)) {
         return axios.get('https://jsonplaceholder.typicode.com/photos?_limit=8')
           .then((response) => {
             context.commit('setProducts', response.data);

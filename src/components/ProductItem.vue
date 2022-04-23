@@ -1,6 +1,6 @@
 <template>
   <div class="product"
-       v-bind:class="{removing, adding}"
+       v-bind:class="{removing, adding, fade: isAfterRemovingItem}"
   >
     <button @click="onDeleteButton">
       <img src="@/assets/Vector.png" alt="">
@@ -31,15 +31,24 @@ export default {
       type: Object,
       required: true,
     },
+    position: {
+      type: Number,
+      required: true,
+    },
+    isAfterRemovingItem: {
+      type: Boolean,
+      required: true,
+    },
   },
   methods: {
     ...mapMutations(['deleteProduct']),
     onDeleteButton() {
       this.removing = true;
-      this.deleteProduct(this.product.id);
+      this.$emit('deleteProduct', this.position);
       setTimeout(() => {
+        this.deleteProduct(this.product.id);
         this.removing = false;
-      }, 700);
+      }, 300);
     },
   },
   mounted() {
@@ -130,7 +139,10 @@ export default {
   animation: 0.7s show ease;
 }
 .removing {
-  animation: 0.7s delete ease;
+  animation: 0.3s delete ease;
+}
+.fade {
+  animation: 0.6s fade ease;
 }
 @keyframes show {
   from { opacity: 0; }
@@ -141,5 +153,15 @@ export default {
   from { opacity: 1; }
   to { opacity: 0; }
 }
-
+@keyframes fade {
+  0% {
+    opacity: 1;
+   }
+  50% {
+    opacity: 0;
+    }
+  100% {
+    opacity: 1;
+     }
+}
 </style>

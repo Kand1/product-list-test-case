@@ -1,17 +1,21 @@
 <template>
   <div class="outer">
     <div class="sort">
-      <select v-model="selectedSort" id="selectID">
+      <select @change="onSortChange" v-model="selectedSort" id="selectID">
         <option>По умолчанию</option>
         <option>По убыванию</option>
         <option>По возрастанию</option>
         <option>По наименованию</option>
       </select>
     </div>
-    <div class="list" v-if="loaded">
-      <ProductItem v-for="(product, i) in sortedProducts"
+    <div class="list" v-if="loaded" v-bind:class="{removing, adding}">
+      <ProductItem v-for="(product, i) in $store.getters.getProducts"
                    v-bind:product="product"
+                   v-bind:position="i"
                    v-bind:key="i"
+                   v-bind:isAfterRemovingItem="removingItemNumber === null ?
+                    false : i > removingItemNumber"
+                   @deleteProduct="deleteProduct"
       />
     </div>
     <div class="loader" v-else>
@@ -22,54 +26,47 @@
 
 <script>
 import ProductItem from '@/components/ProductItem.vue';
-import { mapActions } from 'vuex';
+import { mapActions, mapMutations } from 'vuex';
 
 export default {
   data: () => ({
     loaded: false,
     selectedSort: 'По умолчанию',
+    removing: false,
+    adding: false,
+    removingItemNumber: null,
   }),
   components: {
     ProductItem,
   },
   methods: {
     ...mapActions(['fetchProducts']),
+    ...mapMutations(['setSortingMethod']),
+    onSortChange() {
+      this.removing = true;
+      setTimeout(() => {
+        this.removing = false;
+        this.adding = true;
+        this.setSortingMethod(this.selectedSort);
+        setTimeout(() => {
+          this.adding = false;
+        }, 500);
+      }, 500);
+    },
+    deleteProduct(i) {
+      this.removingItemNumber = i;
+      setTimeout(() => {
+        this.removingItemNumber = null;
+      }, 600);
+    },
   },
   mounted() {
     this.fetchProducts(this).then(() => {
       setTimeout(() => {
         this.loaded = true;
+        this.sortedProducts = this.$store.getters.getProducts;
       }, 1000);
     });
-  },
-  computed: {
-    sortedProducts() {
-      const mas = JSON.parse(JSON.stringify(this.$store.getters.getProducts));
-      if (this.selectedSort === 'По умолчанию') {
-        return mas;
-      }
-      if (this.selectedSort === 'По убыванию') {
-        mas.sort((el1, el2) => (el2.price.split(' ').join('') - el1.price.split(' ').join('')));
-        return mas;
-      }
-      if (this.selectedSort === 'По возрастанию') {
-        mas.sort((el1, el2) => (el1.price.split(' ').join('') - el2.price.split(' ').join('')));
-        return mas;
-      }
-      if (this.selectedSort === 'По наименованию') {
-        mas.sort((el1, el2) => {
-          if (el1.title < el2.title) {
-            return -1;
-          }
-          if (el1.title === el2.title) {
-            return 0;
-          }
-          return 1;
-        });
-        return mas;
-      }
-      return new Error('Не выбрана сортировка');
-    },
   },
 };
 </script>
@@ -140,4 +137,21 @@ export default {
     margin-left: 24px;
   }
 }
+
+.adding {
+  animation: 0.5s show ease;
+}
+.removing {
+  animation: 0.55s delete ease;
+}
+@keyframes show {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes delete {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
 </style>
