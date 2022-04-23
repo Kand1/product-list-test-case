@@ -64,7 +64,6 @@ export default {
     this.fetchProducts(this).then(() => {
       setTimeout(() => {
         this.loaded = true;
-        this.sortedProducts = this.$store.getters.getProducts;
       }, 1000);
     });
   },
