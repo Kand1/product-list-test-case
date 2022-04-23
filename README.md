@@ -1,5 +1,15 @@
 # product-list-test-case
 
+## Запуск на локальной машине
+```
+npm install
+npm run serve
+```
+## Deploy
+```
+https://kand1.github.io/product-list-test-case/
+```
+
 ## Project setup
 ```
 npm install
