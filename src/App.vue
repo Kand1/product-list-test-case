@@ -33,7 +33,7 @@ body {
   height: 100vh;
 }
 
-@media (max-width: 740px) {
+@media (max-width: 760px) {
   #app {
     display: grid;
     grid-template-columns: 1fr;

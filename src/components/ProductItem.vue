@@ -1,6 +1,6 @@
 <template>
   <div class="product"
-       v-bind:class="{removed, added}"
+       v-bind:class="{removing, adding}"
   >
     <button @click="onDeleteButton">
       <img src="@/assets/Vector.png" alt="">
@@ -23,33 +23,28 @@ import { mapMutations } from 'vuex';
 
 export default {
   data: () => ({
-    removed: false,
-    added: true,
+    removing: false,
+    adding: true,
   }),
   props: {
     product: {
       type: Object,
       required: true,
     },
-    id: {
-      type: Number,
-      required: true,
-    },
   },
   methods: {
     ...mapMutations(['deleteProduct']),
     onDeleteButton() {
-      this.removed = true;
-      console.log(this.id);
-      this.deleteProduct(this.id);
+      this.removing = true;
+      this.deleteProduct(this.product.id);
       setTimeout(() => {
-        this.removed = false;
+        this.removing = false;
       }, 700);
     },
   },
   mounted() {
     setTimeout(() => {
-      this.added = false;
+      this.adding = false;
     }, 700);
   },
 };
@@ -60,7 +55,7 @@ export default {
   position: relative;
   transition: 0.4s;
   cursor: pointer;
-  margin: 16px 0 0 16px;
+  margin-top: 16px;
   width: 332px;
   height: 423px;
   background-color: #FFFEFB;
@@ -68,6 +63,7 @@ export default {
   border-radius: 4px;
   font-weight: 600;
   button {
+    transition: 0.3s;
     position: absolute;
     top: -8px;
     right: -8px;
@@ -82,6 +78,14 @@ export default {
       height: 16px;
       width: 13px;
     }
+  }
+  button:hover {
+    transition: 0.3s;
+    background: #EF7474;
+  }
+  button:active {
+    transition: 0.3s;
+    background: #DF6464;
   }
   img {
     border-radius: 4px;
@@ -122,10 +126,10 @@ export default {
     cursor: pointer;
   }
 }
-.added {
+.adding {
   animation: 0.7s show ease;
 }
-.removed {
+.removing {
   animation: 0.7s delete ease;
 }
 @keyframes show {

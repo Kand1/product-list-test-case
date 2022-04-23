@@ -150,6 +150,7 @@ export default {
 .form {
   box-sizing: border-box;
   padding: 22px 24px 24px 24px;
+  margin-top: 16px;
   margin-left: 32px;
   height: 440px;
   width: 332px;
@@ -248,17 +249,18 @@ export default {
   }
 }
 .formTitle {
-  margin: 32px;
-  margin-bottom: 16px;
+  margin: 40px;
+  margin-bottom: 0;
   font-weight: 600;
   font-size: 28px;
   line-height: 35px;
 }
-@media (max-width: 740px) {
+@media (max-width: 760px) {
   .form {
     margin: auto;
   }
   .formTitle {
+    margin-bottom: 8px;
     display: flex;
     justify-content: center;
   }
