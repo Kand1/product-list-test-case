@@ -36,7 +36,7 @@ export default {
   },
   mutations: {
     setProducts(state, payLoad) {
-      const descr0 = 'При отсутствии элементов, загружаются 8 карточек. На загрузке стоит задержка в 1 сек для показа лоадера.';
+      const descr0 = 'При отсутствии элементов загружаются 8 карточек. На загрузке стоит задержка в 1 сек для показа лоадера.';
       state.products = payLoad.map((el) => ({
         id: el.id,
         url: el.url,

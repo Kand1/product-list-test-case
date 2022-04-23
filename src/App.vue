@@ -37,7 +37,7 @@ body {
   #app {
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 470px 1fr;
+    grid-template-rows: 520px 1fr;
   }
 }
 </style>
